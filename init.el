@@ -35,6 +35,9 @@
 (global-set-key (kbd "C-x C-g") 'magit-status)
 (global-set-key (kbd "M-x") 'smex)
 
+;; Change customize-* file
+(setq custom-file (concat user-emacs-directory "custom.el"))
+
 (defun peteyy/mac-mode-hook ()
   (setq mac-command-modifier 'meta
 	mac-option-modifier 'meta))
