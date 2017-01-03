@@ -3,6 +3,8 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 
 (defun ensure-package-installed (&rest packages)
+  ;; Make sure to have downloaded archive description.
+  (package-refresh-contents)
   "Assure every package is installed, ask for installation if it’s not.
 
 Return a list of installed packages or nil for every skipped package."
@@ -16,12 +18,7 @@ Return a list of installed packages or nil for every skipped package."
          package)))
    packages))
 
-;; make sure to have downloaded archive description.
-;; Or use package-archive-contents as suggested by Nicolas Dudebout
-(or (file-exists-p package-user-dir)
-    (package-refresh-contents))
-
-(defun peteyy-ensure-package-installed (&rest packages)
+(defun peteyy/ensure-package-installed (&rest packages)
   (apply 'ensure-package-installed packages)
   ;; activate installed packages
   (package-initialize))
