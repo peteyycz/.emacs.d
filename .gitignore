@@ -3,3 +3,6 @@ auto-save-list
 *~
 smex-items
 projectile-bookmarks.eld
+ido.last
+custom.el
+places
