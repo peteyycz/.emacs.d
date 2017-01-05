@@ -1,6 +1,8 @@
 (package-initialize)
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(package-refresh-contents)
 
 ;; Remove cluttered toolbar
 (tool-bar-mode -1)
@@ -11,31 +13,50 @@
 ;; Disable autosave because it's slow
 (auto-save-mode -1)
 
+;; Parentheses (&friends) helper
+(electric-pair-mode 1)
+
+;; Save adding :ensure t on every use package
+(setq use-package-always-ensure t)
+
 ;; Git integration
 (use-package magit
-  :ensure t
   :bind ("C-x C-g" . magit-status))
 
 ;; Manage projects with a keystroke
 (use-package projectile
-  :ensure t
   :config (projectile-mode 1))
 
 ;; Ido flavored M-x
 (use-package smex
-  :ensure t
   :bind (("M-x" . smex)))
 
 ;; Vertical alignment for ido
 (use-package ido-vertical-mode
-  :ensure t
   :init (setq ido-vertical-define-keys 'C-n-and-C-p-only)
   :config (ido-vertical-mode 1))
 
 ;; If nothing is marked yanks whole line
 (use-package whole-line-or-region
-  :ensure t
   :config (whole-line-or-region-mode 1))
+
+;; Autocomplete popups
+(use-package company
+  :config (global-company-mode 1))
+
+;; Yaml editing support
+(use-package yaml-mode
+  :mode "\\.ya?ml\\'")
+
+;; JavaScript mode
+;; Better highlighting for JS files (potential support for JSX too)
+(use-package js2-mode
+  :interpreter ("node" . js2-mode)
+  :mode ("\\.jsx?\\'" . js2-mode))
+
+;; Maybe I can finally start using it (maybe)
+(use-package ace-jump-mode
+  :bind ("C-." . ace-jump-mode))
 
 ;; Configure backup file creation in it's own directory
 (defvar peteyy/backup-directory (concat user-emacs-directory "backups"))
