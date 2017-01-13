@@ -19,6 +19,13 @@
 ;; Save adding :ensure t on every use package
 (setq use-package-always-ensure t)
 
+(use-package exec-path-from-shell
+  :config (when (memq window-system '(mac ns))
+	    (exec-path-from-shell-initialize)))
+
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
+
 ;; Git integration
 (use-package magit
   :bind ("C-x C-g" . magit-status))
@@ -40,7 +47,7 @@
 (use-package whole-line-or-region
   :config (whole-line-or-region-mode 1))
 
-;; Autocomplete popups
+;; Autocomplete Popups
 (use-package company
   :config (global-company-mode 1))
 
@@ -52,11 +59,44 @@
 ;; Better highlighting for JS files (potential support for JSX too)
 (use-package js2-mode
   :interpreter ("node" . js2-mode)
-  :mode ("\\.jsx?\\'" . js2-mode))
+  :mode ("\\.jsx?\\'" . js2-mode)
+  :config (setq js2-basic-offset 2
+		js2-strict-missing-semi-warning nil))
+
+(defun my/use-eslint-from-node-modules ()
+  (let* ((root (locate-dominating-file
+                (or (buffer-file-name) default-directory)
+                "node_modules"))
+         (eslint (and root
+                      (expand-file-name "node_modules/eslint/bin/eslint.js"
+                                        root))))
+    (when (and eslint (file-executable-p eslint))
+      (setq-local flycheck-javascript-eslint-executable eslint))))
+
+(use-package flycheck
+  :config
+  (global-flycheck-mode)
+  (setq-default flycheck-disabled-checkers '(javascript-jshint))
+  (flycheck-add-mode 'javascript-eslint 'js2-mode)
+  (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules))
 
 ;; Maybe I can finally start using it (maybe)
 (use-package ace-jump-mode
   :bind ("C-." . ace-jump-mode))
+
+;; Markdown editing
+(use-package markdown-mode
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
+
+;; 4daLookz
+(use-package solarized-theme
+  :config (load-theme 'solarized-dark))
+(set-default-font "Input Mono 14")
+(setq-default cursor-type 'bar)
 
 ;; Configure backup file creation in it's own directory
 (defvar peteyy/backup-directory (concat user-emacs-directory "backups"))
@@ -88,7 +128,8 @@ If point was already at that position, move point to beginning of line."
 
 (defun peteyy/mac-mode-hook ()
   (setq mac-command-modifier 'meta
-	mac-option-modifier 'meta))
+	mac-option-modifier 'meta)
+  (mac-auto-operator-composition-mode))
 
 (when (eq window-system 'mac)
   (peteyy/mac-mode-hook))
