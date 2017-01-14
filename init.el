@@ -6,6 +6,7 @@
 
 ;; Remove cluttered toolbar
 (tool-bar-mode -1)
+(menu-bar-mode -1)
 
 ;; Nice built-in completion-system
 (ido-mode 1)
@@ -95,8 +96,12 @@
 ;; 4daLookz
 (use-package solarized-theme
   :config (load-theme 'solarized-dark))
-(set-default-font "Input Mono 14")
 (setq-default cursor-type 'bar)
+(set-frame-font
+ (concat "Input Mono Condensed "
+	 (number-to-string (if (eq (window-system) 'x)
+			       13 ;; Linux
+			     14)))) ;; Mac
 
 ;; Configure backup file creation in it's own directory
 (defvar peteyy/backup-directory (concat user-emacs-directory "backups"))
