@@ -6,6 +6,7 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
+(setq visible-bell 1)
 
 ;; Nice built-in completion-system
 (ido-mode 1)
@@ -26,10 +27,15 @@
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
 
+(use-package all-the-icons)
+(use-package neotree
+  :config (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
+
 ;; Git integration
 (use-package magit
   :bind ("C-x C-g" . magit-status))
 
+(use-package ag)
 ;; Manage projects with a keystroke
 (use-package projectile
   :config (projectile-mode 1))
@@ -54,6 +60,13 @@
 ;; Yaml editing support
 (use-package yaml-mode
   :mode "\\.ya?ml\\'")
+
+;; Web mode
+(use-package web-mode
+  :mode ("\\.html\\'" . web-mode)
+  :config (setq
+	   web-mode-markup-indent-offset 2
+	   web-mode-code-indent-offset 2))
 
 ;; JavaScript mode
 ;; Better highlighting for JS files (potential support for JSX too)
