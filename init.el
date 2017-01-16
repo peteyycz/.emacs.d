@@ -107,7 +107,9 @@
 
 ;; 4daLookz
 (use-package solarized-theme
-  :config (load-theme 'solarized-dark))
+  :config (load-theme 'solarized-dark)
+  :init (setq solarized-use-less-bold t
+	      solarized-use-more-italic t))
 (setq-default cursor-type 'bar)
 (set-frame-font
  (concat "Input Mono Condensed "
