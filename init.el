@@ -6,10 +6,14 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-(setq visible-bell 1)
+(setq-default visible-bell 1
+              indent-tabs-mode nil)
 
 ;; Nice built-in completion-system
 (ido-mode 1)
+(ido-everywhere 1)
+;; Keeps me from fat fingering C-x b
+(global-set-key (kbd "\C-x \C-b") 'ido-switch-buffer)
 
 ;; Disable autosave because it's slow
 (auto-save-mode -1)
@@ -35,19 +39,30 @@
 (use-package magit
   :bind ("C-x C-g" . magit-status))
 
+;; Searching with projectile
 (use-package ag)
 ;; Manage projects with a keystroke
 (use-package projectile
-  :config (projectile-mode 1))
+  :config (projectile-mode 1)
+  ;; Neotree should switch on projectile change
+  (setq projectile-switch-project-action 'projectile-find-file)
+  (add-hook 'projectile-after-switch-project-hook 'neotree-projectile-action))
 
 ;; Ido flavored M-x
 (use-package smex
   :bind (("M-x" . smex)))
 
+(use-package ido-ubiquitous
+  :config (ido-ubiquitous-mode 1))
+
 ;; Vertical alignment for ido
 (use-package ido-vertical-mode
   :init (setq ido-vertical-define-keys 'C-n-and-C-p-only)
   :config (ido-vertical-mode 1))
+
+(use-package flx)
+(use-package flx-ido
+  :config (flx-ido-mode 1))
 
 ;; If nothing is marked yanks whole line
 (use-package whole-line-or-region
@@ -74,7 +89,8 @@
   :interpreter ("node" . js2-mode)
   :mode ("\\.jsx?\\'" . js2-mode)
   :config (setq js2-basic-offset 2
-		js2-strict-missing-semi-warning nil))
+		js2-strict-missing-semi-warning nil
+                js2-mode-show-strict-warnings nil))
 
 (defun my/use-eslint-from-node-modules ()
   (let* ((root (locate-dominating-file
@@ -112,10 +128,10 @@
 	      solarized-use-more-italic t))
 (setq-default cursor-type 'bar)
 (set-frame-font
- (concat "Input Mono Condensed "
+ (concat "Input Mono "
 	 (number-to-string (if (eq (window-system) 'x)
 			       13 ;; Linux
-			     14)))) ;; Mac
+			     13)))) ;; Mac
 
 ;; Configure backup file creation in it's own directory
 (defvar peteyy/backup-directory (concat user-emacs-directory "backups"))
