@@ -43,10 +43,7 @@
 (use-package ag)
 ;; Manage projects with a keystroke
 (use-package projectile
-  :config (projectile-mode 1)
-  ;; Neotree should switch on projectile change
-  (setq projectile-switch-project-action 'projectile-find-file)
-  (add-hook 'projectile-after-switch-project-hook 'neotree-projectile-action))
+  :config (projectile-mode 1))
 
 ;; Ido flavored M-x
 (use-package smex
@@ -72,6 +69,13 @@
 (use-package company
   :config (global-company-mode 1))
 
+;; Gitgutter
+(use-package diff-hl
+  :config
+  (global-diff-hl-mode 1)
+  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
+
 ;; Yaml editing support
 (use-package yaml-mode
   :mode "\\.ya?ml\\'")
@@ -83,12 +87,18 @@
 	   web-mode-markup-indent-offset 2
 	   web-mode-code-indent-offset 2))
 
+(use-package rust-mode
+  :mode ("\\.rs\\'" . rust-mode))
+
+(use-package flycheck-rust
+  :config (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+
 ;; JavaScript mode
 ;; Better highlighting for JS files (potential support for JSX too)
 (use-package js2-mode
   :interpreter ("node" . js2-mode)
   :mode ("\\.jsx?\\'" . js2-mode)
-  :config (setq js2-basic-offset 2
+  :config (setq js2-basic-offset 4
 		js2-strict-missing-semi-warning nil
                 js2-mode-show-strict-warnings nil))
 
@@ -123,15 +133,18 @@
 
 ;; 4daLookz
 (use-package solarized-theme
-  :config (load-theme 'solarized-dark)
-  :init (setq solarized-use-less-bold t
-	      solarized-use-more-italic t))
-(setq-default cursor-type 'bar)
+  :config (load-theme 'gruvbox))
+
+(use-package yasnippet
+  :config (setq yas-snippet-dirs
+                '("~/.emacs.d/snippets")))
+
+(setq-default cursor-type 'box)
 (set-frame-font
- (concat "Input Mono "
+ (concat "Sf Mono "
 	 (number-to-string (if (eq (window-system) 'x)
 			       13 ;; Linux
-			     13)))) ;; Mac
+			     14)))) ;; Mac
 
 ;; Configure backup file creation in it's own directory
 (defvar peteyy/backup-directory (concat user-emacs-directory "backups"))
@@ -146,6 +159,8 @@
 
 ;; Change customize-* file
 (setq custom-file (concat user-emacs-directory "custom.el"))
+
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Smart C-a
 (defun smart-beginning-of-line ()
@@ -163,8 +178,7 @@ If point was already at that position, move point to beginning of line."
 
 (defun peteyy/mac-mode-hook ()
   (setq mac-command-modifier 'meta
-	mac-option-modifier 'meta)
-  (mac-auto-operator-composition-mode))
+	mac-option-modifier 'meta))
 
-(when (eq window-system 'mac)
+(when (eq window-system 'ns)
   (peteyy/mac-mode-hook))
