@@ -1,5 +1,7 @@
 (package-initialize)
 
+(require 'use-package)
+
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 
 ;; Remove cluttered toolbar
@@ -45,12 +47,12 @@
 (use-package projectile
   :config (projectile-mode 1))
 
+(use-package ido-completing-read+
+  :config (ido-ubiquitous-mode 1))
+
 ;; Ido flavored M-x
 (use-package smex
   :bind (("M-x" . smex)))
-
-(use-package ido-ubiquitous
-  :config (ido-ubiquitous-mode 1))
 
 ;; Vertical alignment for ido
 (use-package ido-vertical-mode
@@ -86,6 +88,10 @@
   :config (setq
 	   web-mode-markup-indent-offset 2
 	   web-mode-code-indent-offset 2))
+
+(require 'cl) ;; Required for vala mode for set-difference function
+(use-package vala-mode
+  :mode ("\\.vala\\'" . vala-mode))
 
 (use-package rust-mode
   :mode ("\\.rs\\'" . rust-mode))
@@ -133,7 +139,7 @@
 
 ;; 4daLookz
 (use-package solarized-theme
-  :config (load-theme 'gruvbox))
+  :config (load-theme 'solarized-light))
 
 (use-package yasnippet
   :config (setq yas-snippet-dirs
@@ -141,9 +147,9 @@
 
 (setq-default cursor-type 'box)
 (set-frame-font
- (concat "Sf Mono "
+ (concat "Roboto Mono "
 	 (number-to-string (if (eq (window-system) 'x)
-			       13 ;; Linux
+			       10 ;; Linux
 			     14)))) ;; Mac
 
 ;; Configure backup file creation in it's own directory
