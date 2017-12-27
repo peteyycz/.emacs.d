@@ -138,30 +138,19 @@
   :init (setq markdown-command "multimarkdown"))
 
 ;; 4daLookz
-(use-package solarized-theme
-  :config (load-theme 'solarized-light))
+(use-package gruvbox-theme
+  :config (load-theme 'gruvbox))
 
 (use-package yasnippet
   :config (setq yas-snippet-dirs
                 '("~/.emacs.d/snippets")))
 
 (setq-default cursor-type 'box)
-(set-frame-font
- (concat "Roboto Mono "
-	 (number-to-string (if (eq (window-system) 'x)
-			       10 ;; Linux
-			     14)))) ;; Mac
+(set-frame-font "Roboto Mono 10")
 
-;; Configure backup file creation in it's own directory
-(defvar peteyy/backup-directory (concat user-emacs-directory "backups"))
-(unless (file-exists-p peteyy/backup-directory)
-  (make-directory peteyy/backup-directory t))
-(setq backup-directory-alist `(("." . ,peteyy/backup-directory))
-      make-backup-files t
-      version-control t
-      backup-by-copying-when-linked t
-      delete-old-versions t
-      delete-by-moving-to-trash t)
+;; Disable backup files (# and ~ files)
+(setq make-backup-files nil
+      auto-save-default nil)
 
 ;; Change customize-* file
 (setq custom-file (concat user-emacs-directory "custom.el"))
