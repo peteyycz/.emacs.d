@@ -42,7 +42,8 @@
   :bind ("C-x C-g" . magit-status))
 
 ;; Searching with projectile
-(use-package ag)
+(use-package ripgrep)
+(use-package projectile-ripgrep)
 ;; Manage projects with a keystroke
 (use-package projectile
   :config (projectile-mode 1))
@@ -138,8 +139,8 @@
   :init (setq markdown-command "multimarkdown"))
 
 ;; 4daLookz
-(use-package gruvbox-theme
-  :config (load-theme 'gruvbox))
+(use-package solarized-theme
+  :config (load-theme 'solarized-dark))
 
 (use-package yasnippet
   :config (setq yas-snippet-dirs
