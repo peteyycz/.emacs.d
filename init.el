@@ -2,6 +2,8 @@
 
 (require 'use-package)
 
+(use-package use-package-ensure-system-package)
+
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 
 ;; Remove cluttered toolbar
@@ -42,7 +44,8 @@
   :bind ("C-x C-g" . magit-status))
 
 ;; Searching with projectile
-(use-package ripgrep)
+(use-package ripgrep
+  :ensure-system-package rg)
 (use-package projectile-ripgrep)
 ;; Manage projects with a keystroke
 (use-package projectile
@@ -74,10 +77,9 @@
 
 ;; Gitgutter
 (use-package diff-hl
-  :config
-  (global-diff-hl-mode 1)
-  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
+  :hook ((dired-mode . 'diff-hl-dired-mode)
+         (magit-post-refresh . 'diff-hl-magit-post-refresh))
+  :config (global-diff-hl-mode 1))
 
 ;; Yaml editing support
 (use-package yaml-mode
@@ -89,6 +91,10 @@
   :config (setq
 	   web-mode-markup-indent-offset 2
 	   web-mode-code-indent-offset 2))
+
+(use-package typescript-mode
+  :mode ("\\.ts\\'" . typescript-mode)
+  :config (setq typescript-indent-level 2))
 
 (require 'cl) ;; Required for vala mode for set-difference function
 (use-package vala-mode
@@ -119,12 +125,24 @@
     (when (and eslint (file-executable-p eslint))
       (setq-local flycheck-javascript-eslint-executable eslint))))
 
+(defun my/use-tslint-from-node-modules ()
+  (let* ((root (locate-dominating-file
+                (or (buffer-file-name) default-directory)
+                "node_modules"))
+         (tslint (and root
+                      (expand-file-name "node_modules/tslint/bin/tslint"
+                                        root))))
+    (when (and tslint (file-executable-p tslint))
+      (setq-local flycheck-typescript-tslint-executable tslint))))
+
 (use-package flycheck
+  :hook ((flycheck-mode . my/use-tslint-from-node-modules)
+         (flycheck-mode . my/use-eslint-from-node-modules))
   :config
   (global-flycheck-mode)
   (setq-default flycheck-disabled-checkers '(javascript-jshint))
   (flycheck-add-mode 'javascript-eslint 'js2-mode)
-  (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules))
+  (flycheck-add-mode 'typescript-tslint 'typescript-mode))
 
 ;; Maybe I can finally start using it (maybe)
 (use-package ace-jump-mode
