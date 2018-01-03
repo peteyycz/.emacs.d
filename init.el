@@ -77,8 +77,7 @@
 
 ;; Gitgutter
 (use-package diff-hl
-  :hook ((dired-mode . 'diff-hl-dired-mode)
-         (magit-post-refresh . 'diff-hl-magit-post-refresh))
+  :hook (magit-post-refresh . diff-hl-magit-post-refresh)
   :config (global-diff-hl-mode 1))
 
 ;; Yaml editing support
@@ -110,8 +109,9 @@
 ;; Better highlighting for JS files (potential support for JSX too)
 (use-package js2-mode
   :interpreter ("node" . js2-mode)
-  :mode ("\\.jsx?\\'" . js2-mode)
-  :config (setq js2-basic-offset 4
+  :mode ("\\.m?jsx?\\'" . js2-mode)
+  :config (setq js2-basic-offset 2
+                js2-indent-switch-body t
 		js2-strict-missing-semi-warning nil
                 js2-mode-show-strict-warnings nil))
 
