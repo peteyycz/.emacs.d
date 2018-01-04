@@ -10,14 +10,11 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-(setq-default visible-bell 1
+(setq-default visible-bell 0
               indent-tabs-mode nil)
 
-;; Nice built-in completion-system
-(ido-mode 1)
-(ido-everywhere 1)
 ;; Keeps me from fat fingering C-x b
-(global-set-key (kbd "\C-x \C-b") 'ido-switch-buffer)
+(global-set-key (kbd "C-x C-b") 'counsel-switch-to-buffer-or-window)
 
 ;; Disable autosave because it's slow
 (auto-save-mode -1)
@@ -43,6 +40,22 @@
 (use-package magit
   :bind ("C-x C-g" . magit-status))
 
+
+(use-package counsel)
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
+(use-package ivy
+  :bind
+  ("M-x" . 'counsel-M-x)
+  ("C-s" . 'swiper)
+  ("C-c C-r" . 'ivy-resume)
+  ("C-x C-f" . 'counsel-find-file)
+  :config
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t
+        enable-recursive-minibuffers t)
+  )
+
 ;; Searching with projectile
 (use-package ripgrep
   :ensure-system-package rg)
@@ -51,25 +64,9 @@
 (use-package projectile
   :config (projectile-mode 1))
 
-(use-package ido-completing-read+
-  :config (ido-ubiquitous-mode 1))
-
-;; Ido flavored M-x
-(use-package smex
-  :bind (("M-x" . smex)))
-
-;; Vertical alignment for ido
-(use-package ido-vertical-mode
-  :init (setq ido-vertical-define-keys 'C-n-and-C-p-only)
-  :config (ido-vertical-mode 1))
-
-(use-package flx)
-(use-package flx-ido
-  :config (flx-ido-mode 1))
-
 ;; If nothing is marked yanks whole line
 (use-package whole-line-or-region
-  :config (whole-line-or-region-mode 1))
+  :config (whole-line-or-region-global-mode 1))
 
 ;; Autocomplete Popups
 (use-package company
