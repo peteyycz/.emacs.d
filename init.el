@@ -39,7 +39,8 @@
 ;; Git integration
 (use-package magit
   :bind ("C-x C-g" . magit-status))
-
+(use-package github-browse-file)
+(use-package gist)
 
 (use-package counsel)
 (use-package counsel-projectile
@@ -155,7 +156,7 @@
 
 ;; 4daLookz
 (use-package solarized-theme
-  :config (load-theme 'solarized-dark))
+  :config (load-theme 'solarized-light))
 
 (use-package yasnippet
   :config (setq yas-snippet-dirs
