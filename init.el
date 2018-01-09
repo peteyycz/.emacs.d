@@ -2,14 +2,13 @@
 
 (require 'use-package)
 
-(use-package use-package-ensure-system-package)
-
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 
 ;; Remove cluttered toolbar
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
+(hl-line-mode 1)
 (setq-default visible-bell 0
               indent-tabs-mode nil)
 
@@ -26,8 +25,7 @@
 (setq use-package-always-ensure t)
 
 (use-package exec-path-from-shell
-  :config (when (memq window-system '(mac ns))
-	    (exec-path-from-shell-initialize)))
+  :config (exec-path-from-shell-initialize))
 
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
@@ -58,8 +56,7 @@
   )
 
 ;; Searching with projectile
-(use-package ripgrep
-  :ensure-system-package rg)
+(use-package rg)
 (use-package projectile-ripgrep)
 ;; Manage projects with a keystroke
 (use-package projectile
@@ -81,6 +78,9 @@
 ;; Yaml editing support
 (use-package yaml-mode
   :mode "\\.ya?ml\\'")
+
+(use-package org-bullets
+  :hook org-mode)
 
 ;; Web mode
 (use-package web-mode
@@ -162,8 +162,13 @@
   :config (setq yas-snippet-dirs
                 '("~/.emacs.d/snippets")))
 
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+(add-hook 'prog-mode-hook 'show-paren-mode)
+(add-hook 'prog-mode-hook 'linum-mode)
 (setq-default cursor-type 'box)
-(set-frame-font "Roboto Mono 10")
+(set-frame-font "Roboto Mono 11")
 
 ;; Disable backup files (# and ~ files)
 (setq make-backup-files nil
@@ -187,10 +192,3 @@ If point was already at that position, move point to beginning of line."
          (beginning-of-line))))
 (global-set-key [home] 'smart-beginning-of-line)
 (global-set-key "\C-a" 'smart-beginning-of-line)
-
-(defun peteyy/mac-mode-hook ()
-  (setq mac-command-modifier 'meta
-	mac-option-modifier 'meta))
-
-(when (eq window-system 'ns)
-  (peteyy/mac-mode-hook))
