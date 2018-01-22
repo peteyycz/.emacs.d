@@ -30,10 +30,6 @@
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
 
-(use-package all-the-icons)
-(use-package neotree
-  :config (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
-
 ;; Git integration
 (use-package magit
   :bind ("C-x C-g" . magit-status))
@@ -113,6 +109,11 @@
 		js2-strict-missing-semi-warning nil
                 js2-mode-show-strict-warnings nil))
 
+(use-package lsp-mode
+  :config (setq lsp-print-io t))
+(use-package lsp-javascript-typescript
+  :hook (typescript-mode . lsp-javascript-typescript-enable))
+
 (defun my/use-eslint-from-node-modules ()
   (let* ((root (locate-dominating-file
                 (or (buffer-file-name) default-directory)
@@ -156,7 +157,7 @@
 
 ;; 4daLookz
 (use-package solarized-theme
-  :config (load-theme 'solarized-light))
+  :config (load-theme 'solarized-dark))
 
 (use-package yasnippet
   :config (setq yas-snippet-dirs
@@ -168,7 +169,7 @@
 (add-hook 'prog-mode-hook 'show-paren-mode)
 (add-hook 'prog-mode-hook 'linum-mode)
 (setq-default cursor-type 'box)
-(set-frame-font "Roboto Mono 11")
+(set-frame-font "Roboto Mono 10")
 
 ;; Disable backup files (# and ~ files)
 (setq make-backup-files nil
