@@ -56,7 +56,8 @@
 (use-package projectile-ripgrep)
 ;; Manage projects with a keystroke
 (use-package projectile
-  :config (projectile-mode 1))
+  :config (projectile-mode 1)
+  :bind ("C-c p" . 'projectile-command-map))
 
 ;; If nothing is marked yanks whole line
 (use-package whole-line-or-region
@@ -64,7 +65,18 @@
 
 ;; Autocomplete Popups
 (use-package company
-  :config (global-company-mode 1))
+  :config
+  (setq company-show-numbers t)
+  (setq company-tooltip-align-annotations t)
+  ;; invert the navigation direction if the the completion popup-isearch-match
+  ;; is displayed on top (happens near the bottom of windows)
+  (setq company-tooltip-flip-when-above t)
+  (global-company-mode))
+
+(use-package company-quickhelp
+  :init
+  (company-quickhelp-mode 1)
+  (use-package pos-tip))
 
 ;; Gitgutter
 (use-package diff-hl
@@ -78,16 +90,50 @@
 (use-package org-bullets
   :hook org-mode)
 
+(use-package tide
+  :init
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+         (typescript-mode . tide-hl-identifier-mode)))
+
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1))
+(setq company-tooltip-align-annotations t)
+(add-hook 'before-save-hook 'tide-format-before-save)
+
 ;; Web mode
 (use-package web-mode
-  :mode ("\\.html\\'" . web-mode)
-  :config (setq
-	   web-mode-markup-indent-offset 2
-	   web-mode-code-indent-offset 2))
+  :mode (("\\.html?\\'" . web-mode)
+         ("\\.tsx\\'" . web-mode)
+         ("\\.jsx\\'" . web-mode))
+  :config
+  (setq web-mode-markup-indent-offset 2
+        web-mode-css-indent-offset 2
+        web-mode-code-indent-offset 2
+        web-mode-block-padding 2
+        web-mode-comment-style 2
+
+        web-mode-enable-css-colorization t
+        web-mode-enable-auto-pairing t
+        web-mode-enable-comment-keywords t
+        web-mode-enable-current-element-highlight t
+	web-mode-enable-auto-indentation nil
+        )
+  (add-hook 'web-mode-hook
+            (lambda ()
+              (when (string-equal "tsx" (file-name-extension buffer-file-name))
+		(setup-tide-mode))))
+  ;; enable typescript-tslint checker
+  (flycheck-add-mode 'typescript-tslint 'web-mode))
 
 (use-package typescript-mode
-  :mode ("\\.ts\\'" . typescript-mode)
-  :config (setq typescript-indent-level 2))
+  :config
+  (setq typescript-indent-level 2)
+  (add-hook 'typescript-mode #'subword-mode))
 
 (require 'cl) ;; Required for vala mode for set-difference function
 (use-package vala-mode
@@ -108,11 +154,6 @@
                 js2-indent-switch-body t
 		js2-strict-missing-semi-warning nil
                 js2-mode-show-strict-warnings nil))
-
-(use-package lsp-mode
-  :config (setq lsp-print-io t))
-(use-package lsp-javascript-typescript
-  :hook (typescript-mode . lsp-javascript-typescript-enable))
 
 (defun my/use-eslint-from-node-modules ()
   (let* ((root (locate-dominating-file
@@ -156,8 +197,8 @@
   :init (setq markdown-command "multimarkdown"))
 
 ;; 4daLookz
-(use-package solarized-theme
-  :config (load-theme 'solarized-dark))
+(use-package gruvbox-theme
+  :config (load-theme 'gruvbox))
 
 (use-package yasnippet
   :config (setq yas-snippet-dirs
@@ -169,7 +210,8 @@
 (add-hook 'prog-mode-hook 'show-paren-mode)
 (add-hook 'prog-mode-hook 'linum-mode)
 (setq-default cursor-type 'box)
-(set-frame-font "Roboto Mono 10")
+(set-frame-font "Operator Mono 11")
+(set-face-bold 'bold nil)
 
 ;; Disable backup files (# and ~ files)
 (setq make-backup-files nil
