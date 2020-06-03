@@ -1,8 +1,8 @@
 (package-initialize)
 
-(require 'use-package)
-
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+
+(require 'use-package)
 
 ;; Remove cluttered toolbar
 (tool-bar-mode -1)
@@ -197,8 +197,8 @@
   :init (setq markdown-command "multimarkdown"))
 
 ;; 4daLookz
-(use-package gruvbox-theme
-  :config (load-theme 'gruvbox))
+(use-package dracula-theme
+  :config (load-theme 'dracula))
 
 (use-package yasnippet
   :config (setq yas-snippet-dirs
@@ -210,7 +210,7 @@
 (add-hook 'prog-mode-hook 'show-paren-mode)
 (add-hook 'prog-mode-hook 'linum-mode)
 (setq-default cursor-type 'box)
-(set-frame-font "Operator Mono 11")
+(set-frame-font "Fira Code Light 13")
 (set-face-bold 'bold nil)
 
 ;; Disable backup files (# and ~ files)
