@@ -59,6 +59,8 @@
   :config (projectile-mode 1)
   :bind ("C-c p" . 'projectile-command-map))
 
+(setq shell-file-name "/bin/bash")
+
 ;; If nothing is marked yanks whole line
 (use-package whole-line-or-region
   :config (whole-line-or-region-global-mode 1))
@@ -197,8 +199,8 @@
   :init (setq markdown-command "multimarkdown"))
 
 ;; 4daLookz
-(use-package dracula-theme
-  :config (load-theme 'dracula))
+(use-package gruvbox-theme
+  :config (load-theme 'gruvbox-dark-medium-theme))
 
 (use-package yasnippet
   :config (setq yas-snippet-dirs
